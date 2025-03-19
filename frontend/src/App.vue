@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import { fetchEvents } from "./services/apiService";
+import EventList from "./components/EventList.vue";
 
 interface Event {
   id: string;
@@ -10,26 +13,39 @@ interface Event {
 }
 
 const events = ref<Event[]>([]);
+const router = useRouter();
 
-const fetchEvents = async () => {
+const loadEvents = async () => {
   try {
-    const response = await fetch("http://localhost:8000/api/events");
-    const data = await response.json();
-    events.value = data.items;
+    events.value = await fetchEvents();
   } catch (error) {
-    console.error("Failed to fetch events:", error);
+    console.error("Failed to load events:", error);
   }
 };
 
-
-onMounted(fetchEvents);
+onMounted(loadEvents);
 </script>
 
 <template>
   <div class="container">
     <h1>Events</h1>
+    <button class="add-btn">Add Event</button>
+    <EventList :events="events" />
   </div>
 </template>
 
 <style scoped>
+.container {
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
+}
+.add-btn {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
 </style>

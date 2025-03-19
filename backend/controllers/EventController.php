@@ -3,8 +3,10 @@
 require_once __DIR__ . '/../models/Event.php';
 
 class EventController {
+
     public static function getEvents() {
-        // TODO: Implement the getEvents method
+        $event = new Event();
+        return $event->getAll();
     }
 
     public static function createEvent() {

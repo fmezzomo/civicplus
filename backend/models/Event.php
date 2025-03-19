@@ -38,6 +38,7 @@ class Event {
     }
 
     public function findById( $id ) {
-        // TODO: Implement the findById method
+        $response = $this->apiClient->sendRequest( 'GET', "/api/Events/{$id}" );
+        return $response;
     }
 }

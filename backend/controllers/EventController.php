@@ -21,7 +21,13 @@ class EventController {
         return $event->create( $data );
     }
 
-    public static function getEventDetail($id) {
-        // TODO: Implement the getEventDetail method
+    public static function getEventDetail( $id ) {
+        if ( ! $id ) {
+            http_response_code( 400 );
+            return ['error' => 'ID is required!'];
+        }
+
+        $event = new Event();
+        return $event->findById( $id );
     }
 }

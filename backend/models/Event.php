@@ -25,7 +25,16 @@ class Event {
     }
 
     public function create( $data ) {
-        // TODO: Implement the create method
+        $data = [
+            'id'          => uniqid(),
+            'title'       => $data[ 'title' ],
+            'description' => $data[ 'description' ],
+            'startDate'   => $data[ 'start_date' ],
+            'endDate'     => $data[ 'end_date' ]
+        ];
+
+        $response = $this->apiClient->sendRequest( 'POST', '/api/Events', $data );
+        return $response;
     }
 
     public function findById( $id ) {

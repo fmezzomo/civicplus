@@ -40,9 +40,7 @@ class ApiClient {
      * @throws Exception If authentication fails.
      */
     private function authenticate() {
-        $authUrl  = "{$this->apiUrl}/api/Auth";
-
-        $response = $this->sendRequest('POST', $authUrl, [
+        $response = $this->sendRequest('POST', '/api/Auth', [
             'clientId'     => getenv( 'API_CLIENT_ID' ),
             'clientSecret' => getenv( 'API_CLIENT_SECRET' )
         ]);
@@ -50,12 +48,12 @@ class ApiClient {
         if ( isset( $response[ 'access_token' ] ) ) {
             $this->token = $response[ 'access_token' ];
 
-            $this->tokenExpiration = time() + $response['expires_in'];
+            $this->tokenExpiration = time() + $response[ 'expires_in' ];
 
             // Cache the token and expiration time
             file_put_contents( $this->cacheFile, json_encode( [
                 'access_token'      => $this->token,
-                'expires_in' => $this->tokenExpiration
+                'expires_in'        => $this->tokenExpiration
             ] ) );
         } else {
             throw new Exception( "Error authenticating with the API." );
@@ -72,17 +70,23 @@ class ApiClient {
      *
      * @throws Exception If the request fails.
      */
-    private function sendRequest( $method, $url, $data = null ) {
-        $headers = [ 'Content-Type: application/json' ];
+    public function sendRequest( $method, $url, $data = [] ) {
+        $endUrl = "{$this->apiUrl}{$url}";
+
+        $headers = [
+            'Content-Type: application/json',
+            'accept: text/json'
+        ];
+
         if ( $this->token ) {
             $headers[] = "Authorization: Bearer {$this->token}";
         }
 
         $options = [
-            CURLOPT_URL => $url,
+            CURLOPT_URL            => $endUrl,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CUSTOMREQUEST => $method,
-            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_CUSTOMREQUEST  => $method,
+            CURLOPT_HTTPHEADER     => $headers,
         ];
 
         if ( $data ) {

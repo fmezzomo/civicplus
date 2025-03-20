@@ -11,12 +11,12 @@ class EventController {
 
     public static function createEvent() {
         $event = new Event();
-        $data = [
-            'title'       => 'Test Event',
-            'description' => 'Crhistmas event',
-            'start_date'  => '2025-12-25T00:00:00Z',
-            'end_date'    => '2025-12-25T23:59:59Z'
-        ];
+        $data  = json_decode( file_get_contents( "php://input" ), true );
+
+        if ( ! $data[ 'title' ] || ! $data[ 'start_date' ] || ! $data[ 'end_date' ] ) {
+            http_response_code( 400 );
+            return [ 'error' => 'Title, start_date, and end_date are required!' ];
+        }
 
         return $event->create( $data );
     }
@@ -24,7 +24,7 @@ class EventController {
     public static function getEventDetail( $id ) {
         if ( ! $id ) {
             http_response_code( 400 );
-            return ['error' => 'ID is required!'];
+            return [ 'error' => 'ID is required!' ];
         }
 
         $event = new Event();

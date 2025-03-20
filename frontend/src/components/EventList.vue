@@ -130,9 +130,11 @@ export default defineComponent({
       router.push({ name: "EventDetails", params: { id: eventId } });
     };
 
+    const today = new Date().toISOString().split("T")[0];
+
     const filters = ref({
       title: "",
-      startDate: "",
+      startDate: today,
       endDate: "",
       orderBy: {
         field: "startDate",

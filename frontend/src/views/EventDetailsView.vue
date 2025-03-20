@@ -28,10 +28,8 @@ export default defineComponent({
     const formattedEndDate = computed(() => formatDate(event.value?.endDate));
 
     const loadEvent = async () => {
-      console.log(`Fetching event with ID: ${props.id}`);
       try {
         event.value = await fetchEventById(props.id);
-        console.log('Event loaded:', event.value);
       } catch (error) {
         console.error('Failed to load event:', error);
       }

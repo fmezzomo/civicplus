@@ -35,11 +35,6 @@ onMounted(loadEvents);
 </template>
 
 <style scoped>
-.container {
-  max-width: 600px;
-  margin: auto;
-  text-align: center;
-}
 .add-btn {
   margin-bottom: 15px;
   padding: 10px;

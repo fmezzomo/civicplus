@@ -48,11 +48,6 @@ const saveEvent = async () => {
 </template>
 
 <style scoped>
-.container {
-  max-width: 400px;
-  margin: auto;
-  text-align: center;
-}
 form {
   display: flex;
   flex-direction: column;

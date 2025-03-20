@@ -10,7 +10,7 @@ export const fetchEvents = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/events`);
     const data = await response.json();
-    return data.items; // Return the 'items' array from the response
+    return data.items;
   } catch (error) {
     console.error("Failed to fetch events:", error);
     throw error;
@@ -30,11 +30,35 @@ export const fetchEventById = async (id: string) => {
 
   try {
     const response = await fetch(`${API_BASE_URL}/event/detail?id=${id}`);
+    if (!response.ok) {
+      throw new Error(`API responded with status ${response.status}`);
+    }
     const event = await response.json();
     eventCache.set(id, event);
     return event;
   } catch (error) {
-    console.error(`Failed to fetch event with ID ${id}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Create a new event.
+ *
+ * @param eventData The data for the new event.
+ * @returns A promise resolving to the created event.
+ */
+export const createEvent = async (eventData: Record<string, any>) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/event`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(eventData),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to create event:", error);
     throw error;
   }
 };

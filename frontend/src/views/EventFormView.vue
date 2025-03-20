@@ -14,8 +14,8 @@ const saveEvent = async () => {
     await createEvent({
       title: title.value,
       description: description.value,
-      startDate: start_date.value,
-      endDate: end_date.value,
+      start_date: start_date.value,
+      end_date: end_date.value,
     });
 
     router.push("/");

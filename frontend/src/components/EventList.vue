@@ -1,11 +1,11 @@
 <template>
-    <ul v-if="events" class="event-list">
-      <li v-for="event in events" :key="event.id" @click="viewDetails(event.id)">
-        <h3>{{ event.title }}</h3>
-        <p>{{ event.startDate }} - {{ event.endDate }}</p>
-      </li>
-    </ul>
-    <p v-else>Loading events...</p>
+  <ul v-if="events" class="event-list">
+    <li v-for="event in events" :key="event.id" @click="viewDetails(event.id)">
+      <h3>{{ event.title }}</h3>
+      <p>{{ event.startDate }} - {{ event.endDate }}</p>
+    </li>
+  </ul>
+  <p v-else>Loading events...</p>
 </template>
 
 <style scoped>
@@ -39,6 +39,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   props: {
@@ -47,10 +48,14 @@ export default defineComponent({
       required: true
     }
   },
-  methods: {
-    viewDetails(eventId: number) {
-      console.log(`Viewing details for event ID: ${eventId}`);
-    }
+  setup() {
+    const router = useRouter();
+
+    const viewDetails = (eventId: number) => {
+      router.push(`/event/${eventId}`);
+    };
+
+    return { viewDetails };
   }
 });
 </script>

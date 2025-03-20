@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import { fetchEvents } from "../services/apiService";
 import EventList from "../components/EventList.vue";
 
@@ -12,6 +13,7 @@ interface Event {
 }
 
 const events = ref<Event[]>([]);
+const router = useRouter();
 
 const loadEvents = async () => {
   try {

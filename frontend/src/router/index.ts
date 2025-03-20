@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import EventListView from "../views/EventListView.vue";
-import EventDetailView from "../views/EventDetails.vue";
+import EventDetailView from "../views/EventDetailsView.vue";
 import EventFormView from "../views/EventFormView.vue";
 
 const routes = [

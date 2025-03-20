@@ -2,7 +2,7 @@
   <ul v-if="events" class="event-list">
     <li v-for="event in events" :key="event.id" @click="viewDetails(event.id)">
       <h3>{{ event.title }}</h3>
-      <p>{{ event.startDate }} - {{ event.endDate }}</p>
+      <p>{{ formatDate(event.startDate) }} - {{ formatDate(event.endDate) }}</p>
     </li>
   </ul>
   <p v-else>Loading events...</p>
@@ -40,6 +40,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
+import { formatDate } from '../utils/dateUtils';
 
 export default defineComponent({
   props: {
@@ -52,10 +53,10 @@ export default defineComponent({
     const router = useRouter();
 
     const viewDetails = (eventId: number) => {
-      router.push(`/event/${eventId}`);
+      router.push({ name: "EventDetails", params: { id: eventId } });
     };
 
-    return { viewDetails };
+    return { viewDetails, formatDate };
   }
 });
 </script>

@@ -3,14 +3,15 @@
     <button @click="goBack" class="back-btn">Back to Events</button>
     <h1>{{ event?.title }}</h1>
     <p>{{ event?.description }}</p>
-    <p>{{ event?.startDate }} - {{ event?.endDate }}</p>
+    <p>{{ formattedStartDate }} - {{ formattedEndDate }}</p>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, watch } from 'vue';
+import { defineComponent, ref, onMounted, watch, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { fetchEventById } from '../services/apiService';
+import { formatDate } from '../utils/dateUtils';
 
 export default defineComponent({
   props: {
@@ -22,6 +23,9 @@ export default defineComponent({
   setup(props) {
     const router = useRouter();
     const event = ref(null);
+
+    const formattedStartDate = computed(() => formatDate(event.value?.startDate));
+    const formattedEndDate = computed(() => formatDate(event.value?.endDate));
 
     const loadEvent = async () => {
       console.log(`Fetching event with ID: ${props.id}`);
@@ -41,7 +45,7 @@ export default defineComponent({
 
     watch(() => props.id, loadEvent);
 
-    return { event, goBack };
+    return { event, goBack, formattedStartDate, formattedEndDate };
   },
 });
 </script>

@@ -9,6 +9,9 @@ const start_date = ref("");
 const end_date = ref("");
 const router = useRouter();
 
+const successMessage = ref("");
+const errorMessage = ref("");
+
 const saveEvent = async () => {
   try {
     await createEvent({
@@ -18,8 +21,12 @@ const saveEvent = async () => {
       end_date: end_date.value,
     });
 
-    router.push("/");
+    successMessage.value = "Event created successfully!";
+    errorMessage.value = "";
+    setTimeout(() => router.push("/"), 4000);
   } catch (error) {
+    errorMessage.value = "Failed to create event. Please try again.";
+    successMessage.value = "";
     console.error("Failed to create event:", error);
   }
 };
@@ -44,6 +51,8 @@ const saveEvent = async () => {
       <button type="submit">Save</button>
       <button type="button" @click="router.push('/')" class="cancel-btn">Cancel</button>
     </form>
+    <p v-if="successMessage" class="success">{{ successMessage }}</p>
+    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
   </div>
 </template>
 
@@ -67,5 +76,13 @@ button {
 }
 .cancel-btn {
   background-color: #dc3545;
+}
+.success {
+  color: #28a745;
+  margin-bottom: 10px;
+}
+.error {
+  color: #dc3545;
+  margin-bottom: 10px;
 }
 </style>

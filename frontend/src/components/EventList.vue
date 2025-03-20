@@ -1,19 +1,14 @@
 <template>
   <ul v-if="events" class="event-list">
-    <li v-for="event in events" :key="event.id" @click="viewDetails(event.id)">
+    <li v-for="event in events" :key="event.id" @click="viewDetails(event.id)" class="event-item">
       <h3>{{ event.title }}</h3>
-      <p>{{ formatDate(event.startDate) }} - {{ formatDate(event.endDate) }}</p>
+      <p>{{ formatDate(event.startDate) }}<br>{{ formatDate(event.endDate) }}</p>
     </li>
   </ul>
   <p v-else>Loading events...</p>
 </template>
 
 <style scoped>
-.container {
-  max-width: 600px;
-  margin: auto;
-  text-align: center;
-}
 .add-btn {
   margin-bottom: 15px;
   padding: 10px;
@@ -23,16 +18,23 @@
   cursor: pointer;
 }
 .event-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   list-style: none;
   padding: 0;
+  justify-content: center;
 }
-.event-list li {
+.event-item {
+  flex: 0 0 auto;
+  width: 200px;
+  box-sizing: border-box;
   padding: 10px;
   margin: 5px 0;
   border: 1px solid #ddd;
   cursor: pointer;
 }
-.event-list li:hover {
+.event-item:hover {
   background-color: #f5f5f5;
 }
 </style>

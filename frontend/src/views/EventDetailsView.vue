@@ -1,5 +1,6 @@
 <template>
   <div class="event-details">
+    <button @click="goBack" class="back-btn">Back to Events</button>
     <h1>{{ event?.title }}</h1>
     <p>{{ event?.description }}</p>
     <p>{{ event?.startDate }} - {{ event?.endDate }}</p>
@@ -8,6 +9,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { fetchEventById } from '../services/apiService';
 
 export default defineComponent({
@@ -18,6 +20,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const router = useRouter();
     const event = ref(null);
 
     const loadEvent = async () => {
@@ -30,11 +33,29 @@ export default defineComponent({
       }
     };
 
+    const goBack = () => {
+      router.push('/');
+    };
+
     onMounted(loadEvent);
 
     watch(() => props.id, loadEvent);
 
-    return { event };
+    return { event, goBack };
   },
 });
 </script>
+
+<style scoped>
+.back-btn {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.back-btn:hover {
+  background-color: #5a6268;
+}
+</style>

@@ -90,14 +90,7 @@ onMounted(loadEvents);
 </template>
 
 <style scoped>
-.add-btn {
-  margin-bottom: 15px;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
+
 .filter-container {
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -126,9 +119,5 @@ onMounted(loadEvents);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-}
-.filter-actions {
-  display: flex;
-  justify-content: center;
 }
 </style>

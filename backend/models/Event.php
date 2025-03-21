@@ -13,7 +13,7 @@ class Event {
         $queryParams = [
             '$top'     => $data[ 'top' ] ? $data[ 'top' ] : 20,
             '$skip'    => $data[ 'skip' ] ? $data[ 'skip' ] : 0,
-            '$filter'  => $data[ 'filter' ] ? $data[ 'filter' ] : 'startDate gt ' . date('Y-m-d'),
+            '$filter'  => $data[ 'filter' ] ? $data[ 'filter' ] : null,
             '$orderby' => $data[ 'orderby' ] ? $data[ 'orderby' ] : 'startDate ASC',
         ];
     

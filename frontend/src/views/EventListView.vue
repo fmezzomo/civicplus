@@ -1,30 +1,23 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { fetchEvents } from "../services/apiService";
 import EventList from "../components/EventList.vue";
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-}
+import { Event, Filters, Pagination } from "../interfaces/EventInterfaces";
 
 const events = ref<Event[]>([]);
-const filteredEvents = ref<Event[]>([]); // Ensure this is initialized as an empty array
-const filters = ref({
+const filteredEvents = ref<Event[]>([]);
+const filters = ref<Filters>({
   title: "",
   startDate: new Date().toISOString().split("T")[0], // Today's date
   endDate: "",
   orderBy: {
     field: "startDate",
-    direction: "asc"
-  }
+    direction: "asc",
+  },
 });
 
-const pagination = ref({
+const pagination = ref<Pagination>({
   page: 1,
   limit: 20,
   total: 0,

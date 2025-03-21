@@ -1,5 +1,5 @@
 const API_BASE_URL = "http://localhost:8000/api";
-const eventCache = new Map<string, any>(); // Cache for storing loaded events
+const eventCache = new Map<string, Event>(); // Cache for storing loaded events
 
 /**
  * Fetch all events from the API with optional filters.
@@ -7,7 +7,9 @@ const eventCache = new Map<string, any>(); // Cache for storing loaded events
  * @param filters Optional filters for the API request.
  * @returns A promise resolving to the list of events.
  */
-export const fetchEvents = async (filters: Record<string, any> = {}) => {
+export const fetchEvents = async (
+  filters: FetchEventsFilters = {}
+): Promise<FetchEventsResponse> => {
   try {
     let queryString = "";
 

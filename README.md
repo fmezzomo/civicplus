@@ -50,9 +50,9 @@ The project is divided into two main parts:
    cd backend
    ```
 
-2. Rename the `config/example.env` file to `config/.env`:
+2. Copy the `config/example.env` file to `config/.env`:
    ```bash
-   mv config/example.env config/.env
+   cp config/example.env config/.env
    ```
 
 3. Configure the environment variables in the `config/.env` file.

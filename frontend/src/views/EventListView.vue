@@ -13,7 +13,7 @@ interface Event {
 }
 
 const events = ref<Event[]>([]);
-const filteredEvents = ref<Event[]>([]);
+const filteredEvents = ref<Event[]>([]); // Ensure this is initialized as an empty array
 const filters = ref({
   title: "",
   startDate: new Date().toISOString().split("T")[0], // Today's date
@@ -24,22 +24,37 @@ const filters = ref({
   }
 });
 
+const pagination = ref({
+  page: 1,
+  limit: 20,
+  total: 0,
+});
+
 const router = useRouter();
 
 const loadEvents = async () => {
   try {
-    filteredEvents.value = await fetchEvents(filters.value);
+    const response = await fetchEvents({
+      ...filters.value,
+      top: pagination.value.limit,
+      skip: pagination.value.limit * (pagination.value.page - 1),
+    });
+    filteredEvents.value = response.events || [];
+    pagination.value.total = response.total || 0;
   } catch (error) {
     console.error("Failed to load events:", error);
+    filteredEvents.value = [];
   }
 };
 
 const applyFilters = async () => {
-  try {
-    filteredEvents.value = await fetchEvents(filters.value);
-  } catch (error) {
-    console.error("Failed to apply filters:", error);
-  }
+  pagination.value.page = 1; // Reset to the first page when filters are applied
+  await loadEvents();
+};
+
+const changePage = (newPage: number) => {
+  pagination.value.page = newPage;
+  loadEvents();
 };
 
 onMounted(loadEvents);
@@ -86,6 +101,21 @@ onMounted(loadEvents);
     </div>
     <button @click="router.push('/event/new')" class="add-btn">Add Event</button>
     <EventList :events="filteredEvents" />
+    <div class="pagination">
+      <button
+        :disabled="pagination.page === 1"
+        @click="changePage(pagination.page - 1)"
+      >
+        Previous
+      </button>
+      <span>Page {{ pagination.page }} of {{ Math.ceil(pagination.total / pagination.limit) }}</span>
+      <button
+        :disabled="pagination.page === Math.ceil(pagination.total / pagination.limit)"
+        @click="changePage(pagination.page + 1)"
+      >
+        Next
+      </button>
+    </div>
   </div>
 </template>
 
@@ -119,5 +149,24 @@ onMounted(loadEvents);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+.pagination button {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+.pagination button:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
 }
 </style>

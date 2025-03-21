@@ -25,11 +25,24 @@ export const fetchEvents = async (filters: Record<string, any> = {}) => {
       queryString += `orderby=${orderBy}&`;
     }
 
+    if (filters.top) {
+      queryString += `top=${filters.top}&`;
+    }
+
+    if (filters.skip) {
+      queryString += `skip=${filters.skip}&`;
+    }
+
     queryString = queryString.endsWith("&") ? queryString.slice(0, -1) : queryString;
     const response = await fetch(`${API_BASE_URL}/events?${queryString}`);
-
+    if (!response.ok) {
+      throw new Error("Failed to fetch events");
+    }
     const data = await response.json();
-    return data.items;
+    return {
+      events: data.items || [],
+      total: data.total || 0,
+    };
   } catch (error) {
     console.error("Failed to fetch events:", error);
     throw error;

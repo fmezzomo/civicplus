@@ -4,6 +4,7 @@
       <li v-for="event in events" :key="event.id" @click="viewDetails(event.id)" class="event-item">
         <h3>{{ event.title }}</h3>
         <p>{{ formatDate(event.startDate) }}<br>{{ formatDate(event.endDate) }}</p>
+        <span class="hover-text">View Details</span>
       </li>
     </ul>
     <p v-else>Loading events...</p>
@@ -11,14 +12,6 @@
 </template>
 
 <style scoped>
-.add-btn {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
 .event-list {
   display: flex;
   flex-wrap: wrap;
@@ -35,9 +28,25 @@
   margin: 5px 0;
   border: 1px solid #ddd;
   cursor: pointer;
+  position: relative;
 }
 .event-item:hover {
   background-color: #f5f5f5;
+}
+.hover-text {
+  display: none;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+.event-item:hover .hover-text {
+  display: block;
 }
 </style>
 

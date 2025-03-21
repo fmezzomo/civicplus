@@ -9,11 +9,12 @@ class Event {
        $this->apiClient = new ApiClient();
     }
 
-    public function getAll() {
+    public function getAll( $data ) {
         $queryParams = [
-            '$top'     => 20,
-            '$skip'    => 0,
-            '$orderby' => 'startDate desc',
+            '$top'     => $data[ 'top' ] ? $data[ 'top' ] : 20,
+            '$skip'    => $data[ 'skip' ] ? $data[ 'skip' ] : 0,
+            '$filter'  => $data[ 'filter' ] ? $data[ 'filter' ] : 'startDate gt ' . date('Y-m-d'),
+            '$orderby' => $data[ 'orderby' ] ? $data[ 'orderby' ] : 'startDate ASC',
         ];
     
         $queryString = http_build_query( $queryParams );
@@ -21,6 +22,7 @@ class Event {
         $url         = "/api/Events?" . $queryString;
 
         $response = $this->apiClient->sendRequest( 'GET', $url );
+        
         return $response;
     }
 

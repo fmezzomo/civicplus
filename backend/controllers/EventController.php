@@ -6,7 +6,8 @@ class EventController {
 
     public static function getEvents() {
         $event = new Event();
-        return $event->getAll();
+        $data  = $_GET;
+        return $event->getAll( $data );
     }
 
     public static function createEvent() {

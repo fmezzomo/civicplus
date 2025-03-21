@@ -57,12 +57,17 @@ The project is divided into two main parts:
 
 3. Configure the environment variables in the `config/.env` file.
 
-4. Start the PHP server:
+4. Create the `cache` folder with write permissions:
+   ```bash
+   mkdir -p cache && chmod 777 cache
+   ```
+
+5. Start the PHP server:
    ```bash
    php -S localhost:8000 -t public
    ```
 
-5. Ensure the backend is running at [http://localhost:8000](http://localhost:8000).
+6. Ensure the backend is running at [http://localhost:8000](http://localhost:8000).
 
 ### Notes
 

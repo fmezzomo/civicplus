@@ -13,6 +13,7 @@ interface Event {
 }
 
 const events = ref<Event[]>([]);
+const filteredEvents = ref<Event[]>([]);
 const filters = ref({
   title: "",
   startDate: new Date().toISOString().split("T")[0], // Today's date
@@ -23,47 +24,25 @@ const filters = ref({
   }
 });
 
-const filteredEvents = computed(() => {
-  let filtered = [...events.value];
-
-  if (filters.value.title) {
-    filtered = filtered.filter(event =>
-      event.title.toLowerCase().includes(filters.value.title.toLowerCase())
-    );
-  }
-
-  if (filters.value.startDate) {
-    filtered = filtered.filter(event => event.startDate >= filters.value.startDate);
-  }
-
-  if (filters.value.endDate) {
-    filtered = filtered.filter(event => event.endDate <= filters.value.endDate);
-  }
-
-  filtered.sort((a, b) => {
-    const field = filters.value.orderBy.field as keyof Event;
-    const direction = filters.value.orderBy.direction === "asc" ? 1 : -1;
-    return a[field] > b[field] ? direction : -direction;
-  });
-
-  return filtered;
-});
-
 const router = useRouter();
 
 const loadEvents = async () => {
   try {
-    events.value = await fetchEvents();
+    filteredEvents.value = await fetchEvents(filters.value);
   } catch (error) {
     console.error("Failed to load events:", error);
   }
 };
 
-onMounted(loadEvents);
-
-const applyFilters = () => {
-  console.log("Filters applied:", filters.value);
+const applyFilters = async () => {
+  try {
+    filteredEvents.value = await fetchEvents(filters.value);
+  } catch (error) {
+    console.error("Failed to apply filters:", error);
+  }
 };
+
+onMounted(loadEvents);
 </script>
 
 <template>

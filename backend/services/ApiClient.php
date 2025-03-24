@@ -62,27 +62,37 @@ class ApiClient
                 ]
             );
 
-            if ( isset( $response[ 'access_token' ] ) && ! empty( $response[ 'access_token' ] ) ) {
-                $this->token           = $response[ 'access_token' ];
-                $this->tokenExpiration = ( time() + $response[ 'expires_in' ] );
+            if ( $response[ 'success' ] && isset( $response[ 'data' ][ 'access_token' ] ) ) {
+                $this->token           = $response[ 'data' ][ 'access_token' ];
+                $this->tokenExpiration = time() + $response[ 'data' ][ 'expires_in' ];
 
                 // Cache the token and expiration time
                 file_put_contents(
                     $this->cacheFile,
-                    json_encode(
-                        [
-                            'access_token' => $this->token,
-                            'expires_in'   => $this->tokenExpiration,
-                        ]
-                    )
+                    json_encode( [
+                        'access_token' => $this->token,
+                        'expires_in'   => $this->tokenExpiration,
+                    ] )
                 );
             } else {
-                throw new Exception ('Invalid response: Missing access_token.' );
+                $this->logger->error( 'Invalid response: Missing access_token.' );
+                return [
+                    'success' => false,
+                    'message' => 'Invalid response: Missing access_token.',
+                ];
             }
         } catch ( Exception $e ) {
             $this->logger->error( 'Authentication failed: ' . $e->getMessage() );
-            throw new Exception( 'Authentication failed: ' . $e->getMessage() );
+            return [
+                'success' => false,
+                'message' => 'Authentication failed: ' . $e->getMessage(),
+            ];
         }
+
+        return [
+            'success' => true,
+            'message' => 'Authentication successful.',
+        ];
     }
 
 

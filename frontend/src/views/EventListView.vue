@@ -6,7 +6,7 @@ import EventList from "../components/EventList.vue";
 import { Event, Filters, Pagination } from "../interfaces/EventInterfaces";
 
 const events = ref<Event[]>([]);
-const filteredEvents = ref<Event[]>([]);
+const filteredEvents = ref<Event[] | null>(null);
 const filters = ref<Filters>({
   title: "",
   startDate: new Date().toISOString().split("T")[0], // Today's date
@@ -94,7 +94,7 @@ onMounted(loadEvents);
     </div>
     <button @click="router.push('/event/new')" class="add-btn">Add Event</button>
     <EventList :events="filteredEvents" />
-    <div class="pagination">
+    <div v-if="filteredEvents !== null" class="pagination">
       <button
         :disabled="pagination.page === 1"
         @click="changePage(pagination.page - 1)"

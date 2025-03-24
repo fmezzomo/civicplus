@@ -1,13 +1,14 @@
 <template>
   <div>
-    <ul v-if="events" class="event-list">
+    <ul v-if="events && events.length" class="event-list">
       <li v-for="event in events" :key="event.id" @click="viewDetails(event.id)" class="event-item">
         <h3>{{ event.title }}</h3>
         <p>{{ formatDate(event.startDate) }}<br>{{ formatDate(event.endDate) }}</p>
         <span class="hover-text">View Details</span>
       </li>
     </ul>
-    <p v-else>Loading events...</p>
+    <p v-else-if="events === null" class="loading-text">Loading events...</p>
+    <p v-else>No events found.</p>
   </div>
 </template>
 
@@ -47,6 +48,12 @@
 }
 .event-item:hover .hover-text {
   display: block;
+}
+.loading-text {
+  text-align: center;
+  font-size: 1.5em;
+  color: #555;
+  margin: 20px 0;
 }
 </style>
 

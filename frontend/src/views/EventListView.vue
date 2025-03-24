@@ -42,6 +42,7 @@ const loadEvents = async () => {
 
 const applyFilters = async () => {
   pagination.value.page = 1; // Reset to the first page when filters are applied
+  filteredEvents.value = null;
   await loadEvents();
 };
 

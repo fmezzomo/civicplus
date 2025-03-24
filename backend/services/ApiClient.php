@@ -40,23 +40,27 @@ class ApiClient {
      * @throws Exception If authentication fails.
      */
     private function authenticate() {
-        $response = $this->sendRequest('POST', '/api/Auth', [
-            'clientId'     => getenv( 'API_CLIENT_ID' ),
-            'clientSecret' => getenv( 'API_CLIENT_SECRET' )
-        ]);
+        try {
+            $response = $this->sendRequest('POST', '/api/Auth', [
+                'clientId'     => getenv( 'API_CLIENT_ID' ),
+                'clientSecret' => getenv( 'API_CLIENT_SECRET' )
+            ]);
 
-        if ( isset( $response[ 'access_token' ] ) ) {
-            $this->token = $response[ 'access_token' ];
+            if ( isset( $response[ 'access_token' ] ) && ! empty( $response[ 'access_token' ] ) ) {
+                $this->token = $response[ 'access_token' ];
 
-            $this->tokenExpiration = time() + $response[ 'expires_in' ];
+                $this->tokenExpiration = time() + $response[ 'expires_in' ];
 
-            // Cache the token and expiration time
-            file_put_contents( $this->cacheFile, json_encode( [
-                'access_token'      => $this->token,
-                'expires_in'        => $this->tokenExpiration
-            ] ) );
-        } else {
-            throw new Exception( "Error authenticating with the API." );
+                // Cache the token and expiration time
+                file_put_contents( $this->cacheFile, json_encode( [
+                    'access_token' => $this->token,
+                    'expires_in'   => $this->tokenExpiration
+                ] ) );
+            } else {
+                throw new Exception( "Invalid response: Missing access_token." );
+            }
+        } catch ( Exception $e ) {
+            throw new Exception( "Authentication failed: " . $e->getMessage() );
         }
     }
 
@@ -97,12 +101,23 @@ class ApiClient {
         curl_setopt_array( $ch, $options );
         $response = curl_exec( $ch );
         $error    = curl_error( $ch );
+        $httpCode = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
         curl_close( $ch );
 
         if ( $error ) {
             throw new Exception( "Request error: $error" );
         }
 
-        return json_decode( $response, true );
+        if ( $httpCode < 200 || $httpCode >= 300 ) {
+            throw new Exception( "API responded with HTTP code $httpCode: $response" );
+        }
+
+        $decodedResponse = json_decode( $response, true );
+
+        if ( json_last_error() !== JSON_ERROR_NONE ) {
+            throw new Exception( "Failed to decode JSON response: " . json_last_error_msg() );
+        }
+
+        return $decodedResponse;
     }
 }

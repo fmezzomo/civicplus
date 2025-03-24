@@ -1,26 +1,10 @@
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
+import { showNotification } from "../utils/notificationUtil"; // Import the utility
 
 const API_BASE_URL = "http://localhost:8000/api";
 const eventCache = new Map<string, Event>(); // Cache for storing loaded events
 
-/**
- * Display a notification to the user.
- *
- * @param message The message to display.
- * @param type The type of notification ("success" or "error").
- */
-const showNotification = (message: string, type: "success" | "error") => {
-  Toastify({
-    text: message,
-    duration: 5000,
-    close: true,
-    gravity: "top", // Position: top or bottom
-    position: "right", // Position: left, center, or right
-    backgroundColor: type === "success" ? "green" : "red",
-    stopOnFocus: true, // Prevents dismissing on hover
-  }).showToast();
-};
 
 /**
  * Fetch all events from the API with optional filters.

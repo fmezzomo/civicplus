@@ -50,12 +50,15 @@ The project is divided into two main parts:
    cd backend
    ```
 
-2. Copy the `config/example.env` file to `config/.env`:
+2. Install PHP dependencies using Composer:
+   ```bash
+   composer install
+   ```
+
+3. Copy the `config/example.env` file to `config/.env`:
    ```bash
    cp config/example.env config/.env
    ```
-
-3. Configure the environment variables in the `config/.env` file.
 
 4. Create the `cache` folder with write permissions:
    ```bash

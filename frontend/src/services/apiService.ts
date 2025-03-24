@@ -1,5 +1,26 @@
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
+
 const API_BASE_URL = "http://localhost:8000/api";
 const eventCache = new Map<string, Event>(); // Cache for storing loaded events
+
+/**
+ * Display a notification to the user.
+ *
+ * @param message The message to display.
+ * @param type The type of notification ("success" or "error").
+ */
+const showNotification = (message: string, type: "success" | "error") => {
+  Toastify({
+    text: message,
+    duration: 5000,
+    close: true,
+    gravity: "top", // Position: top or bottom
+    position: "right", // Position: left, center, or right
+    backgroundColor: type === "success" ? "green" : "red",
+    stopOnFocus: true, // Prevents dismissing on hover
+  }).showToast();
+};
 
 /**
  * Fetch all events from the API with optional filters.
@@ -37,17 +58,21 @@ export const fetchEvents = async (
 
     queryString = queryString.endsWith("&") ? queryString.slice(0, -1) : queryString;
     const response = await fetch(`${API_BASE_URL}/events?${queryString}`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch events");
-    }
     const data = await response.json();
+
+    if (!data.success) {
+      showNotification(data.message || "Failed to fetch events", "error");
+      throw new Error(data.message || "Failed to fetch events");
+    }
+
     return {
-      events: data.items || [],
-      total: data.total || 0,
+      events: data.data.items || [],
+      total: data.data.total || 0,
     };
-  } catch (error) {
-    console.error("Failed to fetch events:", error);
-    throw error;
+  } catch (error: any) {
+    console.error("Failed to fetch events:", error.message);
+    showNotification(error.message || "An error occurred while fetching events.", "error");
+    throw new Error(error.message || "An error occurred while fetching events.");
   }
 };
 
@@ -64,14 +89,19 @@ export const fetchEventById = async (id: string) => {
 
   try {
     const response = await fetch(`${API_BASE_URL}/event/detail?id=${id}`);
-    if (!response.ok) {
-      throw new Error(`API responded with status ${response.status}`);
+    const data = await response.json();
+
+    if (!data.success) {
+      showNotification(data.message || "Failed to fetch event details", "error");
+      throw new Error(data.message || "Failed to fetch event details");
     }
-    const event = await response.json();
-    eventCache.set(id, event);
-    return event;
-  } catch (error) {
-    throw error;
+
+    eventCache.set(id, data.data);
+    return data.data;
+  } catch (error: any) {
+    console.error("Failed to fetch event details:", error.message);
+    showNotification(error.message || "An error occurred while fetching event details.", "error");
+    throw new Error(error.message || "An error occurred while fetching event details.");
   }
 };
 
@@ -90,9 +120,18 @@ export const createEvent = async (eventData: Record<string, any>) => {
       },
       body: JSON.stringify(eventData),
     });
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to create event:", error);
-    throw error;
+    const data = await response.json();
+
+    if (!data.success) {
+      showNotification(data.message || "Failed to create event", "error");
+      throw new Error(data.message || "Failed to create event");
+    }
+
+    showNotification("Event created successfully!", "success");
+    return data.data;
+  } catch (error: any) {
+    console.error("Failed to create event:", error.message);
+    showNotification(error.message || "An error occurred while creating the event.", "error");
+    throw new Error(error.message || "An error occurred while creating the event.");
   }
 };

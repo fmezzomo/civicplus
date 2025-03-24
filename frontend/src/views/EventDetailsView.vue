@@ -1,9 +1,12 @@
 <template>
   <div class="event-details">
     <button @click="goBack" class="back-btn">Back to Events</button>
-    <h1>{{ event?.title }}</h1>
-    <p>{{ event?.description }}</p>
-    <p>{{ formattedStartDate }} - {{ formattedEndDate }}</p>
+    <div v-if="loading">Loading...</div>
+    <div v-else>
+      <h1>{{ event?.title }}</h1>
+      <p>{{ event?.description }}</p>
+      <p>{{ formattedStartDate }} - {{ formattedEndDate }}</p>
+    </div>
   </div>
 </template>
 
@@ -23,15 +26,19 @@ export default defineComponent({
   setup(props) {
     const router = useRouter();
     const event = ref(null);
+    const loading = ref(false);
 
     const formattedStartDate = computed(() => formatDate(event.value?.startDate));
     const formattedEndDate = computed(() => formatDate(event.value?.endDate));
 
     const loadEvent = async () => {
+      loading.value = true;
       try {
         event.value = await fetchEventById(props.id);
       } catch (error) {
         console.error('Failed to load event:', error);
+      } finally {
+        loading.value = false;
       }
     };
 
@@ -43,7 +50,7 @@ export default defineComponent({
 
     watch(() => props.id, loadEvent);
 
-    return { event, goBack, formattedStartDate, formattedEndDate };
+    return { event, goBack, formattedStartDate, formattedEndDate, loading };
   },
 });
 </script>
